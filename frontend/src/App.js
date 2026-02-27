@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import "./App.css";
+import AiLoader from "./components/ui/AiLoader";
 
 const API = "http://localhost:5001";
 
@@ -223,13 +224,7 @@ function App() {
                 </div>
               )}
 
-              {loading && (
-                <div className="result-loading">
-                  <div className="pulse-ring" />
-                  <p>🤖 AI is analyzing the image...</p>
-                  <p className="loading-sub">Scanning pixel patterns & facial features</p>
-                </div>
-              )}
+              {loading && <AiLoader text="Scanning" />}
 
               {error && (
                 <div className="result-error">
