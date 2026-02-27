@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
+import { motion } from "framer-motion";
+import { AuroraBackground } from "./components/ui/aurora-background";
 import "./App.css";
-import AiLoader from "./components/ui/AiLoader";
 
 const API = "http://localhost:5001";
 
@@ -113,46 +114,57 @@ function App() {
 
       {/* HOME PAGE */}
       {page === "home" && (
-        <div className="page home-page">
-          <div className="hero">
-            <div className="hero-badge">🛡️ AI-Powered Detection</div>
-            <h1>Detect Deepfakes<br /><span className="gradient-text">Instantly & Accurately</span></h1>
-            <p className="hero-sub">Upload any image and our AI will tell you if it's real or AI-generated in seconds. Also works as a Chrome Extension!</p>
-            <div className="hero-btns">
-              <button className="btn-primary" onClick={() => setPage("analyze")}>🔍 Start Analyzing</button>
-              <button className="btn-outline" onClick={() => setPage("about")}>Learn How It Works</button>
-            </div>
-          </div>
-
-          <div className="stats-row">
-            {[["⚡", "< 3 sec", "Detection Speed"], ["🎯", "94%+", "AI Accuracy"], ["🌐", "Any Image", "Web or Upload"], ["🔌", "Chrome", "Extension Ready"]].map(([icon, val, label]) => (
-              <div className="stat-card" key={label}>
-                <span className="stat-icon">{icon}</span>
-                <span className="stat-val">{val}</span>
-                <span className="stat-label">{label}</span>
+        <AuroraBackground>
+          <motion.div
+            initial={{ opacity: 0.0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{
+              delay: 0.3,
+              duration: 0.8,
+              ease: "easeInOut",
+            }}
+            className="relative flex flex-col gap-4 items-center justify-center px-4"
+          >
+            <div className="hero">
+              <div className="hero-badge">🛡️ AI-Powered Detection</div>
+              <h1>Detect Deepfakes<br /><span className="gradient-text">Instantly & Accurately</span></h1>
+              <p className="hero-sub">Upload any image and our AI will tell you if it's real or AI-generated in seconds. Also works as a Chrome Extension!</p>
+              <div className="hero-btns">
+                <button className="btn-primary" onClick={() => setPage("analyze")}>🔍 Start Analyzing</button>
+                <button className="btn-outline" onClick={() => setPage("about")}>Learn How It Works</button>
               </div>
-            ))}
-          </div>
+            </div>
 
-          <div className="how-section">
-            <h2>How It Works</h2>
-            <div className="steps-row">
-              {[
-                ["01", "📤", "Upload Image", "Drag & drop or select any image file from your device"],
-                ["02", "🤖", "AI Analyzes", "HuggingFace model scans pixel patterns & facial anomalies"],
-                ["03", "⚡", "Get Result", "Instant REAL or FAKE verdict with confidence percentage"],
-                ["04", "📄", "Save Report", "History saved — view all past analyses anytime"],
-              ].map(([num, icon, title, desc]) => (
-                <div className="step-card" key={num}>
-                  <div className="step-num">{num}</div>
-                  <div className="step-icon">{icon}</div>
-                  <h3>{title}</h3>
-                  <p>{desc}</p>
+            <div className="stats-row">
+              {[["⚡", "< 3 sec", "Detection Speed"], ["🎯", "94%+", "AI Accuracy"], ["🌐", "Any Image", "Web or Upload"], ["🔌", "Chrome", "Extension Ready"]].map(([icon, val, label]) => (
+                <div className="stat-card" key={label}>
+                  <span className="stat-icon">{icon}</span>
+                  <span className="stat-val">{val}</span>
+                  <span className="stat-label">{label}</span>
                 </div>
               ))}
             </div>
-          </div>
-        </div>
+
+            <div className="how-section">
+              <h2>How It Works</h2>
+              <div className="steps-row">
+                {[
+                  ["01", "📤", "Upload Image", "Drag & drop or select any image file from your device"],
+                  ["02", "🤖", "AI Analyzes", "HuggingFace model scans pixel patterns & facial anomalies"],
+                  ["03", "⚡", "Get Result", "Instant REAL or FAKE verdict with confidence percentage"],
+                  ["04", "📄", "Save Report", "History saved — view all past analyses anytime"],
+                ].map(([num, icon, title, desc]) => (
+                  <div className="step-card" key={num}>
+                    <div className="step-num">{num}</div>
+                    <div className="step-icon">{icon}</div>
+                    <h3>{title}</h3>
+                    <p>{desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </AuroraBackground>
       )}
 
       {/* ANALYZE PAGE */}
@@ -224,7 +236,13 @@ function App() {
                 </div>
               )}
 
-              {loading && <AiLoader text="Scanning" />}
+              {loading && (
+                <div className="result-loading">
+                  <div className="pulse-ring" />
+                  <p>🤖 AI is analyzing the image...</p>
+                  <p className="loading-sub">Scanning pixel patterns & facial features</p>
+                </div>
+              )}
 
               {error && (
                 <div className="result-error">
