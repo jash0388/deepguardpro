@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.venv/
+venv/
+ENV/
+env/
+*.egg-info/
+dist/
+build/
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# React
+frontend/.cache/
+frontend/build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads (temp files)
+backend/uploads/*.jpg
+backend/uploads/*.png
+backend/uploads/*.jpeg
+!backend/uploads/.gitkeep
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 320px;
+      font-family: 'Inter', sans-serif;
+      background: #F8F9FF;
+      color: #1A1A2E;
+    }
+    .header {
+      background: linear-gradient(135deg, #5B4FE8, #3B30C4);
+      padding: 1rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .header-title { color: white; font-size: 1.05rem; font-weight: 800; }
+    .header-sub { color: rgba(255,255,255,0.7); font-size: 0.75rem; }
+    .body { padding: 1.2rem; }
+
+    .idle-state { text-align: center; padding: 1.5rem 1rem; }
+    .idle-icon { font-size: 3rem; margin-bottom: 0.7rem; }
+    .idle-state p { color: #64748B; font-size: 0.88rem; line-height: 1.5; }
+    .idle-state b { color: #5B4FE8; }
+
+    .loading-state { text-align: center; padding: 1.5rem 1rem; }
+    .spinner {
+      width: 48px; height: 48px;
+      border: 4px solid #EEF0FF;
+      border-top-color: #5B4FE8;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-state p { color: #5B4FE8; font-weight: 600; font-size: 0.9rem; }
+    .loading-state small { color: #94A3B8; font-size: 0.78rem; }
+
+    .result-state { }
+    .img-preview {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      background: #EEF0FF;
+    }
+    .verdict-box {
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+    }
+    .verdict-box.fake { background: #FFF0F0; border: 2px solid #FF6B6B; }
+    .verdict-box.real { background: #E6FFF9; border: 2px solid #00C896; }
+    .verdict-emoji { font-size: 2rem; }
+    .verdict-text { font-size: 1.6rem; font-weight: 900; letter-spacing: 1px; }
+    .verdict-box.fake .verdict-text { color: #FF6B6B; }
+    .verdict-box.real .verdict-text { color: #00C896; }
+
+    .conf-row { display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 600; margin-bottom: 0.35rem; color: #64748B; }
+    .conf-pct { color: #1A1A2E; font-weight: 800; }
+    .bar-bg { background: #EEF0FF; border-radius: 6px; height: 8px; overflow: hidden; margin-bottom: 1rem; }
+    .bar-fill { height: 100%; border-radius: 6px; transition: width 0.6s ease; }
+    .bar-fill.fake { background: linear-gradient(90deg, #FF6B6B, #FFB3B3); }
+    .bar-fill.real { background: linear-gradient(90deg, #00C896, #7FFFD4); }
+
+    .error-state { text-align: center; padding: 1rem; }
+    .error-state p { color: #FF6B6B; font-size: 0.88rem; margin-bottom: 0.8rem; }
+
+    .btn {
+      width: 100%;
+      padding: 0.65rem;
+      border-radius: 8px;
+      border: none;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: #5B4FE8; color: white; }
+    .btn-primary:hover { background: #3B30C4; }
+    .btn-outline { background: white; color: #5B4FE8; border: 2px solid #5B4FE8; margin-top: 0.5rem; }
+    .btn-outline:hover { background: #EEF0FF; }
+
+    .open-app {
+      text-align: center;
+      margin-top: 0.8rem;
+      font-size: 0.78rem;
+      color: #94A3B8;
+    }
+    .open-app a { color: #5B4FE8; text-decoration: none; font-weight: 600; }
+    .footer-bar {
+      background: #1A1A2E;
+      text-align: center;
+      padding: 0.4rem;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span style="font-size:1.4rem">🛡️</span>
+    <div>
+      <div class="header-title">DeepGuard Pro</div>
+      <div class="header-sub">AI Deepfake Detector</div>
+    </div>
+  </div>
+
+  <div class="body">
+    <!-- IDLE -->
+    <div id="idle-state" class="idle-state">
+      <div class="idle-icon">🖱️</div>
+      <p><b>Right-click any image</b> on any website and select<br><b>"Check with DeepGuard"</b><br>to detect deepfakes instantly.</p>
+    </div>
+
+    <!-- LOADING -->
+    <div id="loading-state" class="loading-state" style="display:none">
+      <div class="spinner"></div>
+      <p>🤖 AI is analyzing...</p>
+      <small>Scanning pixel patterns & facial features</small>
+    </div>
+
+    <!-- RESULT -->
+    <div id="result-state" class="result-state" style="display:none">
+      <img id="result-img" class="img-preview" alt="analyzed image" />
+      <div id="verdict-box" class="verdict-box">
+        <span id="verdict-emoji" class="verdict-emoji"></span>
+        <span id="verdict-text" class="verdict-text"></span>
+      </div>
+      <div class="conf-row">
+        <span>Confidence Score</span>
+        <span class="conf-pct" id="conf-pct"></span>
+      </div>
+      <div class="bar-bg">
+        <div id="conf-bar" class="bar-fill" style="width:0%"></div>
+      </div>
+      <button class="btn btn-primary" id="analyze-again">🔄 Analyze Another Image</button>
+      <button class="btn btn-outline" id="open-webapp">🌐 Open Full Web App</button>
+    </div>
+
+    <!-- ERROR -->
+    <div id="error-state" class="error-state" style="display:none">
+      <div style="font-size:2.5rem;margin-bottom:.5rem">⚠️</div>
+      <p id="error-msg">Analysis failed. Make sure the backend is running.</p>
+      <button class="btn btn-primary" id="retry-btn">Try Again</button>
+    </div>
+  </div>
+
+  <div class="footer-bar">DeepGuard Pro • Hackathon 2024</div>
+  <script src="popup.js"></script>
+</body>
+</html>
